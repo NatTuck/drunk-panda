@@ -28,5 +28,14 @@ export class PlayerActor extends Actor {
     const body = controller.body;
     this.pos = vec(body.x + body.w / 2, body.y + body.h / 2);
     this.rig.update(dt, controller, effects, bottles);
+
+    if (controller.isDead) {
+      this.graphics.opacity = 0.45;
+    } else if (controller.invulnerable > 0) {
+      this.graphics.opacity =
+        Math.sin(controller.time * 55) > 0 ? 0.35 : 1;
+    } else {
+      this.graphics.opacity = 1;
+    }
   }
 }

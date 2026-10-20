@@ -8,6 +8,9 @@ export interface BuzzEffects {
   swayPx: number;
   driftSpeed: number;
   cameraSway: number;
+  damageMul: number;
+  damageTakenMul: number;
+  reachBonus: number;
 }
 
 export function bandForValue(value: number): BuzzBand {
@@ -103,6 +106,9 @@ export class Buzz {
       swayPx: band.swayPx * (focus ? BUZZ.focusSwayMul : 1),
       driftSpeed: band.driftSpeed * (focus ? BUZZ.focusDriftMul : 1),
       cameraSway: band.cameraSway * (focus ? BUZZ.focusSwayMul : 1),
+      damageMul: band.damageMul,
+      damageTakenMul: band.damageTakenMul,
+      reachBonus: band.reachBonus,
     };
   }
 }

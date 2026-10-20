@@ -51,6 +51,43 @@ export class Sfx {
     this.tone(160, 90, 0.12, 'triangle', 0.025);
   }
 
+  attack(index: number): void {
+    this.noise(0.1, 0.045, 'bandpass', 500, index === 2 ? 2200 : 1500);
+    this.tone(index === 2 ? 240 : 300, 130, 0.09, 'triangle', 0.025);
+  }
+
+  hit(heavy: boolean): void {
+    this.tone(heavy ? 95 : 130, 55, heavy ? 0.13 : 0.08, 'sine', heavy ? 0.1 : 0.065);
+    this.noise(heavy ? 0.1 : 0.06, heavy ? 0.07 : 0.045, 'lowpass', 900, 420);
+    this.tone(heavy ? 320 : 420, 180, 0.05, 'square', 0.018);
+  }
+
+  enemyWindup(): void {
+    this.tone(480, 560, 0.12, 'triangle', 0.022);
+  }
+
+  enemyAttack(): void {
+    this.noise(0.12, 0.04, 'bandpass', 500, 1600);
+    this.tone(220, 120, 0.1, 'triangle', 0.02);
+  }
+
+  playerHurt(): void {
+    this.tone(150, 65, 0.18, 'sine', 0.09);
+    this.noise(0.12, 0.06, 'lowpass', 600, 260);
+    this.tone(90, 70, 0.2, 'triangle', 0.04, 0.04);
+  }
+
+  enemyDeath(): void {
+    this.tone(230, 70, 0.34, 'triangle', 0.05);
+    this.noise(0.26, 0.04, 'lowpass', 900, 300);
+  }
+
+  playerDeath(): void {
+    this.tone(180, 55, 0.5, 'sine', 0.08);
+    this.noise(0.4, 0.05, 'lowpass', 700, 180);
+    this.tone(120, 60, 0.6, 'triangle', 0.035, 0.08);
+  }
+
   drop(): void {
     this.tone(190, 110, 0.08, 'sine', 0.03);
   }

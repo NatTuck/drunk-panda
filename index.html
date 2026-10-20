@@ -8,7 +8,7 @@
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='54' r='34' fill='%23f2eee1'/%3E%3Ccircle cx='28' cy='26' r='13' fill='%23202027'/%3E%3Ccircle cx='72' cy='26' r='13' fill='%23202027'/%3E%3Cellipse cx='36' cy='52' rx='10' ry='13' fill='%23202027'/%3E%3Cellipse cx='64' cy='52' rx='10' ry='13' fill='%23202027'/%3E%3Ccircle cx='36' cy='51' r='4' fill='%23fff'/%3E%3Ccircle cx='64' cy='51' r='4' fill='%23fff'/%3E%3Cellipse cx='50' cy='68' rx='5' ry='3' fill='%23202027'/%3E%3C/svg%3E"
     />
-    <title>Drunken Panda — Movement Prototype</title>
+    <title>Drunken Panda — Combat Prototype</title>
   </head>
   <body>
     <main id="shell">
@@ -19,10 +19,17 @@
       <div id="hud">
         <header class="brand">
           <h1>DRUNKEN PANDA</h1>
-          <p>movement prototype</p>
+          <p>combat prototype</p>
         </header>
 
-        <section class="buzz-panel" aria-label="Drunkenness">
+        <section class="buzz-panel" aria-label="Drunkenness and health">
+          <div class="health-row">
+            <span class="health-label">VIGOR</span>
+            <div class="health-track">
+              <div id="health-fill" class="health-fill"></div>
+            </div>
+            <span id="health-value" class="health-value">100</span>
+          </div>
           <div class="buzz-head">
             <span class="buzz-label">BUZZ</span>
             <span id="band-name" class="band-name">SOBER</span>
@@ -50,9 +57,9 @@
 
         <aside class="controls" aria-label="Controls">
           <div><kbd>A</kbd><kbd>D</kbd> move <kbd>SPACE</kbd> jump</div>
-          <div><kbd>SHIFT</kbd> dash <kbd>E</kbd> drink (hold)</div>
-          <div><kbd>Q</kbd> steady <kbd>S</kbd>+<kbd>SPACE</kbd> drop</div>
-          <div><kbd>R</kbd> reset <kbd>F1</kbd> debug</div>
+          <div><kbd>J</kbd> attack <kbd>SHIFT</kbd> dash</div>
+          <div><kbd>E</kbd> drink (hold) <kbd>Q</kbd> steady</div>
+          <div><kbd>S</kbd>+<kbd>SPACE</kbd> drop <kbd>R</kbd> reset <kbd>F1</kbd> debug</div>
         </aside>
 
         <aside id="debug" class="debug" hidden>

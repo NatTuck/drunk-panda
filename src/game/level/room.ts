@@ -23,6 +23,15 @@ export interface LanternDef {
   y: number;
 }
 
+export interface EnemySpawnDef {
+  id: string;
+  x: number;
+  y: number;
+  patrolMin: number;
+  patrolMax: number;
+  maxHealth?: number;
+}
+
 export interface RoomData {
   width: number;
   height: number;
@@ -32,6 +41,7 @@ export interface RoomData {
   signs: SignDef[];
   pickups: PickupDef[];
   lanterns: LanternDef[];
+  enemies: EnemySpawnDef[];
   teaZone: Rect;
   teaHouse: { x: number; y: number; w: number; h: number };
   teaBowl: { x: number; y: number };
@@ -79,7 +89,7 @@ export const ROOM: RoomData = {
   signs: [
     { x: 120, y: 552, text: 'A / D  ·  move' },
     { x: 340, y: 552, text: 'SPACE · jump (hold)' },
-    { x: 560, y: 552, text: 'SHIFT · dash' },
+    { x: 560, y: 552, text: 'J attack · SHIFT dash' },
     { x: 760, y: 552, text: 'gap → dash-jump!' },
     { x: 1370, y: 458, text: 'S + SPACE · drop' },
     { x: 1730, y: 484, text: 'one-way planks' },
@@ -97,6 +107,11 @@ export const ROOM: RoomData = {
   lanterns: [
     { x: 2272, y: 524 },
     { x: 2638, y: 572 },
+  ],
+  enemies: [
+    { id: 'monk-start', x: 650, y: 582, patrolMin: 520, patrolMax: 820 },
+    { id: 'monk-gate', x: 2150, y: 582, patrolMin: 2100, patrolMax: 2320 },
+    { id: 'monk-tea', x: 2960, y: 582, patrolMin: 2880, patrolMax: 3020 },
   ],
   teaZone: { x: 3120, y: 616, w: 180, h: 24 },
   teaHouse: { x: 3060, y: 430, w: 360, h: 210 },

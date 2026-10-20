@@ -1,4 +1,4 @@
-import { Actor, Color, vec, type Scene } from 'excalibur';
+import { Actor, Color, Font, Text, vec, type Scene } from 'excalibur';
 import { clamp } from '../util/math';
 
 interface Particle {
@@ -12,11 +12,21 @@ interface Particle {
   shrink: boolean;
 }
 
+interface FloatingText {
+  actor: Actor;
+  vy: number;
+  life: number;
+  maxLife: number;
+  startOpacity: number;
+}
+
 const DUST = ['#d8ccb4', '#b8ab93', '#8f8575'];
 const AMBER = ['#f6c46c', '#e8a24a', '#ffd88a'];
+const ROBE = ['#375545', '#264234', '#c3a05a', '#d7a879'];
 
 export class ParticleSystem {
   private particles: Particle[] = [];
+  private texts: FloatingText[] = [];
 
   constructor(private readonly scene: Scene) {}
 
@@ -43,6 +53,22 @@ export class ParticleSystem {
         particle.actor.scale = vec(scale, scale);
       }
     }
+
+    for (let i = this.texts.length - 1; i >= 0; i--) {
+      const text = this.texts[i]!;
+      text.life -= dt;
+      if (text.life <= 0) {
+        this.scene.remove(text.actor);
+        text.actor.kill();
+        this.texts.splice(i, 1);
+        continue;
+      }
+      const progress = text.life / text.maxLife;
+      text.actor.pos = vec(text.actor.pos.x, text.actor.pos.y + text.vy * dt);
+      text.actor.graphics.opacity = text.startOpacity * clamp(progress * 2, 0, 1);
+      const scale = 1 + (1 - progress) * 0.18;
+      text.actor.scale = vec(scale, scale);
+    }
   }
 
   clear(): void {
@@ -50,7 +76,12 @@ export class ParticleSystem {
       this.scene.remove(particle.actor);
       particle.actor.kill();
     }
+    for (const text of this.texts) {
+      this.scene.remove(text.actor);
+      text.actor.kill();
+    }
     this.particles = [];
+    this.texts = [];
   }
 
   landDust(x: number, y: number, impact: number): void {
@@ -167,6 +198,97 @@ export class ParticleSystem {
     }
   }
 
+  hitSpark(x: number, y: number, color = '#ffe0a0'): void {
+    for (let i = 0; i < 10; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 110 + Math.random() * 240;
+      this.add({
+        x,
+        y,
+        width: 5 + Math.random() * 9,
+        height: 1.6,
+        rotation: angle,
+        color: i % 3 === 0 ? '#ffffff' : color,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        gravity: 210,
+        life: 0.14 + Math.random() * 0.16,
+        opacity: 0.95,
+        shrink: false,
+        z: 32,
+      });
+    }
+  }
+
+  enemyDeathBurst(x: number, y: number): void {
+    for (let i = 0; i < 18; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 40 + Math.random() * 160;
+      this.add({
+        x,
+        y,
+        radius: 1.8 + Math.random() * 2.8,
+        color: pick(ROBE),
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - 90,
+        gravity: 380,
+        life: 0.45 + Math.random() * 0.5,
+        opacity: 0.85,
+        shrink: true,
+        z: 24,
+      });
+    }
+    for (let i = 0; i < 5; i++) {
+      this.add({
+        x,
+        y,
+        radius: 1.5 + Math.random() * 2,
+        color: pick(AMBER),
+        vx: (Math.random() - 0.5) * 120,
+        vy: -40 - Math.random() * 100,
+        gravity: -20,
+        life: 0.5 + Math.random() * 0.4,
+        opacity: 0.8,
+        shrink: true,
+        z: 33,
+      });
+    }
+  }
+
+  damageNumber(
+    x: number,
+    y: number,
+    text: string,
+    color = '#ffe0a0',
+  ): void {
+    const font = new Font({
+      family: 'monospace',
+      size: 17,
+      bold: true,
+      color: Color.fromHex(color),
+    });
+    font.shadow = {
+      blur: 4,
+      offset: vec(0, 2),
+      color: Color.fromHex('#000000'),
+    };
+
+    const actor = new Actor({
+      x: x + (Math.random() - 0.5) * 10,
+      y,
+      z: 40,
+    });
+    actor.graphics.add(new Text({ text, font }));
+    this.scene.add(actor);
+    this.texts.push({
+      actor,
+      vy: -38,
+      life: 0.72,
+      maxLife: 0.72,
+      startOpacity: 1,
+    });
+  }
+
   steam(x: number, y: number): void {
     this.add({
       x: x + (Math.random() - 0.5) * 22,
@@ -205,6 +327,7 @@ export class ParticleSystem {
     radius?: number;
     width?: number;
     height?: number;
+    rotation?: number;
     color: string;
     vx: number;
     vy: number;
@@ -221,6 +344,7 @@ export class ParticleSystem {
       anchor: vec(0.5, 0.5),
       z: options.z,
       opacity: options.opacity,
+      rotation: options.rotation,
     };
     const actor =
       options.radius !== undefined

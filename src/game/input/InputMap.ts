@@ -6,12 +6,15 @@ interface Callbacks {
   onReset: () => void;
 }
 
+type EdgeAction = 'jump' | 'dash' | 'attack' | 'drink';
+
 interface Held {
   left: boolean;
   right: boolean;
   down: boolean;
   jump: boolean;
   dash: boolean;
+  attack: boolean;
   drink: boolean;
   focus: boolean;
   select: boolean;
@@ -23,17 +26,20 @@ const NONE: Held = {
   down: false,
   jump: false,
   dash: false,
+  attack: false,
   drink: false,
   focus: false,
   select: false,
 };
 
 /**
- * One action map for keyboard and gamepad. Edges are derived from the previous
- * sample so jump/dash/drink presses fire exactly once even on a fixed update.
+ * One action map for keyboard and gamepad. Keyboard edges are latched on the
+ * keydown event so a quick tap is never lost during a hitstop frame. Gamepad
+ * edges are derived from the previous sample.
  */
 export class InputMap {
   private previous: Held = { ...NONE };
+  private latched = new Set<EdgeAction>();
 
   constructor(
     private readonly engine: Engine,
@@ -71,23 +77,27 @@ export class InputMap {
         keyboard.isHeld(Keys.W) ||
         keyboard.isHeld(Keys.ArrowUp) ||
         (connected && pad.isButtonHeld(Buttons.Face1)),
+      attack:
+        keyboard.isHeld(Keys.J) ||
+        keyboard.isHeld(Keys.Z) ||
+        (connected &&
+          (pad.isButtonHeld(Buttons.Face3) ||
+            pad.isButtonHeld(Buttons.RightBumper))),
       dash:
         keyboard.isHeld(Keys.ShiftLeft) ||
         keyboard.isHeld(Keys.ShiftRight) ||
         keyboard.isHeld(Keys.K) ||
         (connected &&
-          (pad.isButtonHeld(Buttons.Face3) ||
-            pad.isButtonHeld(Buttons.RightBumper))),
+          (pad.isButtonHeld(Buttons.Face2) ||
+            pad.isButtonHeld(Buttons.LeftBumper))),
       drink:
         keyboard.isHeld(Keys.E) ||
         (connected &&
-          (pad.isButtonHeld(Buttons.Face2) ||
+          (pad.isButtonHeld(Buttons.Face4) ||
             pad.isButtonHeld(Buttons.RightTrigger))),
       focus:
         keyboard.isHeld(Keys.Q) ||
-        (connected &&
-          (pad.isButtonHeld(Buttons.Face4) ||
-            pad.isButtonHeld(Buttons.LeftBumper))),
+        (connected && pad.isButtonHeld(Buttons.LeftTrigger)),
       select: connected && pad.isButtonHeld(Buttons.Select),
     };
 
@@ -100,22 +110,48 @@ export class InputMap {
       right: held.right,
       down: held.down,
       jump: held.jump,
-      jumpPressed: held.jump && !this.previous.jump,
-      dashPressed: held.dash && !this.previous.dash,
+      jumpPressed:
+        this.latched.has('jump') || (held.jump && !this.previous.jump),
+      dashPressed:
+        this.latched.has('dash') || (held.dash && !this.previous.dash),
+      attackPressed:
+        this.latched.has('attack') || (held.attack && !this.previous.attack),
       drink: held.drink,
-      drinkPressed: held.drink && !this.previous.drink,
+      drinkPressed:
+        this.latched.has('drink') || (held.drink && !this.previous.drink),
       focus: held.focus,
     };
 
+    this.latched.clear();
     this.previous = held;
     return result;
   }
 
   private readonly handleKeyPress = (event: KeyEvent): void => {
-    if (event.key === Keys.F1) {
-      this.callbacks.onToggleDebug();
-    } else if (event.key === Keys.R) {
-      this.callbacks.onReset();
+    switch (event.key) {
+      case Keys.Space:
+      case Keys.W:
+      case Keys.ArrowUp:
+        this.latched.add('jump');
+        break;
+      case Keys.ShiftLeft:
+      case Keys.ShiftRight:
+      case Keys.K:
+        this.latched.add('dash');
+        break;
+      case Keys.J:
+      case Keys.Z:
+        this.latched.add('attack');
+        break;
+      case Keys.E:
+        this.latched.add('drink');
+        break;
+      case Keys.F1:
+        this.callbacks.onToggleDebug();
+        break;
+      case Keys.R:
+        this.callbacks.onReset();
+        break;
     }
   };
 }

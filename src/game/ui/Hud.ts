@@ -16,6 +16,8 @@ export class Hud {
   private readonly bandFlavor = mustGet<HTMLElement>('band-flavor');
   private readonly buzzValue = mustGet<HTMLElement>('buzz-value');
   private readonly barFill = mustGet<HTMLElement>('buzz-fill');
+  private readonly healthFill = mustGet<HTMLElement>('health-fill');
+  private readonly healthValue = mustGet<HTMLElement>('health-value');
   private readonly bottlesEl = mustGet<HTMLElement>('bottles');
   private readonly bottleLabel = mustGet<HTMLElement>('bottle-label');
   private readonly drinkTrack = mustGet<HTMLElement>('drink-track');
@@ -52,6 +54,15 @@ export class Hud {
     this.barFill.style.width = `${value}%`;
     this.barFill.style.background = band.color;
     this.panel.classList.toggle('is-wasted', band.id === 'wasted');
+
+    const healthRatio = Math.max(
+      0,
+      Math.min(1, controller.health / controller.maxHealth),
+    );
+    this.healthFill.style.width = `${healthRatio * 100}%`;
+    this.healthFill.style.background =
+      healthRatio > 0.5 ? '#7fd6a4' : healthRatio > 0.25 ? '#f0b35b' : '#e0614f';
+    this.healthValue.textContent = `${Math.ceil(controller.health)}`;
 
     for (let i = 0; i < this.pips.length; i++) {
       this.pips[i]!.classList.toggle('empty', i >= buzz.bottles);

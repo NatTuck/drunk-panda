@@ -14,6 +14,10 @@ export function damp(current: number, target: number, lambda: number, dt: number
   return current + (target - current) * (1 - Math.exp(-lambda * dt));
 }
 
+export function lerp(a: number, b: number, t: number): number {
+  return a + (b - a) * t;
+}
+
 /** Deterministic 0..1 hash, used for tile variation and background art. */
 export function hash2(x: number, y: number, seed = 0): number {
   let h = (x * 374761393 + y * 668265263 + seed * 2147483647) | 0;

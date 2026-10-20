@@ -32,6 +32,7 @@ export function emptyInput(overrides: Partial<PlayerInput> = {}): PlayerInput {
     jump: false,
     jumpPressed: false,
     dashPressed: false,
+    attackPressed: false,
     drink: false,
     drinkPressed: false,
     focus: false,

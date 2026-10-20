@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#070a0d" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='54' r='34' fill='%23f2eee1'/%3E%3Ccircle cx='28' cy='26' r='13' fill='%23202027'/%3E%3Ccircle cx='72' cy='26' r='13' fill='%23202027'/%3E%3Cellipse cx='36' cy='52' rx='10' ry='13' fill='%23202027'/%3E%3Cellipse cx='64' cy='52' rx='10' ry='13' fill='%23202027'/%3E%3Ccircle cx='36' cy='51' r='4' fill='%23fff'/%3E%3Ccircle cx='64' cy='51' r='4' fill='%23fff'/%3E%3Cellipse cx='50' cy='68' rx='5' ry='3' fill='%23202027'/%3E%3C/svg%3E"
+    />
+    <title>Drunken Panda — Movement Prototype</title>
+  </head>
+  <body>
+    <main id="shell">
+      <canvas id="game" aria-label="Drunken Panda game canvas"></canvas>
+      <div id="tint" aria-hidden="true"></div>
+      <div id="flash" aria-hidden="true"></div>
+
+      <div id="hud">
+        <header class="brand">
+          <h1>DRUNKEN PANDA</h1>
+          <p>movement prototype</p>
+        </header>
+
+        <section class="buzz-panel" aria-label="Drunkenness">
+          <div class="buzz-head">
+            <span class="buzz-label">BUZZ</span>
+            <span id="band-name" class="band-name">SOBER</span>
+            <span id="buzz-value" class="buzz-value">0%</span>
+            <span id="bottles" class="bottles" aria-label="Bottles remaining"></span>
+          </div>
+          <div id="buzz-track" class="buzz-track">
+            <div id="buzz-fill" class="buzz-fill"></div>
+            <i class="tick tick-25"></i>
+            <i class="tick tick-55"></i>
+            <i class="tick tick-85"></i>
+          </div>
+          <div id="drink-track" class="drink-track">
+            <div id="drink-fill" class="drink-fill"></div>
+          </div>
+          <div class="buzz-hint">
+            <span id="band-flavor">steady paws</span>
+            <span class="dot">·</span>
+            <span id="bottle-label">2 bottles</span>
+          </div>
+        </section>
+
+        <div id="tea-hint" class="tea-hint">TEA HOUSE · SOBERING UP</div>
+        <div id="toast" class="toast" role="status"></div>
+
+        <aside class="controls" aria-label="Controls">
+          <div><kbd>A</kbd><kbd>D</kbd> move <kbd>SPACE</kbd> jump</div>
+          <div><kbd>SHIFT</kbd> dash <kbd>E</kbd> drink (hold)</div>
+          <div><kbd>Q</kbd> steady <kbd>S</kbd>+<kbd>SPACE</kbd> drop</div>
+          <div><kbd>R</kbd> reset <kbd>F1</kbd> debug</div>
+        </aside>
+
+        <aside id="debug" class="debug" hidden>
+          <div class="debug-title">DEBUG <span>F1</span></div>
+          <pre id="debug-body"></pre>
+        </aside>
+      </div>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

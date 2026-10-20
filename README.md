@@ -4,6 +4,8 @@ A wobbly panda martial artist drinks his way through a side-scrolling metroidvan
 This repository is the **movement feel prototype**: one test course, four levels of
 inebriation, and enough debug tooling to tune the panda until he feels right.
 
+![Drunken Panda on the high climb, thoroughly wasted](./docs/screenshot.png)
+
 Built with **Excalibur.js 0.32**, TypeScript, Vite and pnpm. Everything is client-side;
 there is no backend.
 

@@ -25,6 +25,17 @@ pnpm build      # static production build in dist/
 pnpm preview
 ```
 
+## Play it online
+
+Every push to `main` builds the game and publishes `dist/` to GitHub Pages via
+`.github/workflows/deploy-pages.yml`:
+
+https://nattuck.github.io/drunk-panda/
+
+One-time setup: in the repository's **Settings → Pages**, set **Source** to
+**GitHub Actions**. The Vite `base` is `./`, so the build works from the
+`/drunk-panda/` subpath without extra configuration.
+
 ## Controls
 
 | Action | Keyboard | Gamepad |
